@@ -1,0 +1,75 @@
+	<html>
+	<head>
+		<title>XPO Landing page</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<meta http-equiv="refresh" content="6000">
+		<script type="text/javascript" src="http://barrow.tsi.lan/javascripts/api/tableau-2.0.0.min.js"> </script>
+		<script type="text/javascript">
+		/////////////////////
+		// Global variables
+		var viz, workbook, activeSheet, firstLoad,filterString,breadcrumbName;
+		var onError = function (err) {
+		// generic error message
+		alert(err); 
+	};
+	function getFilters() {
+		var filterList = [];
+		activeSheet = workbook.getActiveSheet();
+		var worksheets=activeSheet.getWorksheets();
+		var sheetName = activeSheet.getName();
+		console.log("");
+		console.log("new page");
+		var displayFilters = function (filters) {
+			for (var fIndexA = 0; fIndexA< filters.length; fIndexA++) {
+				for (var fIndexB = 0; fIndexB< filters[fIndexA].getAppliedValues().length; fIndexB++){
+					console.log(filters[fIndexA].getWorksheet().getName() + " :  "  + filters[fIndexA].getFieldName() + ":" + filters[fIndexA].getAppliedValues()[fIndexB].value + "   type:" + filters[fIndexA].getFilterType());
+					// Two options: 
+					// FIRST - DOES NOT WORK!! I think it is because I need to return the value 
+					if (fIndexB = 0)
+					{
+					var valueFilter = filters[fIndexA].getAppliedValues()[fIndexB].value;
+					console.log(valueFilter); // This is not logging so I guess we are not getting in the if statement :(
+					return valueFilter;
+					}
+					// And then use the valueFilter to filter the view
+					// SECOND
+					// CHange the for loop to just grab the first value in the array and have it set to the same variable as above 
+				}
+			}
+		}
+		for (var worksheetIndex = 0; worksheetIndex < worksheets.length; worksheetIndex++) {
+			worksheets[worksheetIndex].getFiltersAsync().then(displayFilters, onError);
+		}	
+	}
+		// Initialise the viz to hold the workbook
+		function initializeViz(){
+			var placeholderDiv = document.getElementById("tableauViz");   	
+			url = "http://barrow.tsi.lan/#/views/Tableau-javascript/Main?:embed=y&:display_count=no";
+			var options = {
+	        width: "1004px", //width: placeholderDiv.offsetWidth,
+	        height: "862px", //height: placeholderDiv.offsetHeight,
+	        hideTabs: true,
+	        hideToolbar: false,
+	        onFirstInteractive: function () {
+	        	workbook = viz.getWorkbook();
+	        	activeSheet = workbook.getActiveSheet();
+	        	getFilters();
+	        	viz.addEventListener('tabswitch', function(event) {
+	        		firstLoad=false;
+	        		getFilters();
+	        	} )
+	        }
+	    };
+	    viz = new tableauSoftware.Viz(placeholderDiv, url, options);    
+	}
+	</script>
+</head>
+<body>
+	<script type="text/javascript">
+	    //Initialize the viz after the div is created
+	    initializeViz();
+	    </script>
+	    <button id="pushme" onclick="getFilters()">pushme</button>
+	</body>
+	</html>
