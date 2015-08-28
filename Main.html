@@ -23,11 +23,11 @@
 			for (var fIndexA = 0; fIndexA< filters.length; fIndexA++) {
 				for (var fIndexB = 0; fIndexB< filters[fIndexA].getAppliedValues().length; fIndexB++){
 					console.log(filters[fIndexA].getWorksheet().getName() + " :  "  + filters[fIndexA].getFieldName() + ":" + filters[fIndexA].getAppliedValues()[fIndexB].value + "   type:" + filters[fIndexA].getFilterType());
-					console.log(x);
 					if (x%2 ==1) {
 					var valueFilter = filters[fIndexA].getAppliedValues()[fIndexB+x].value;
 					var filterName = filters[fIndexA].getFieldName();
 					return activeSheet.getWorksheets().get("Sheet 1").applyFilterAsync(filterName, valueFilter, tableau.FilterUpdateType.REPLACE);
+					// possibility to return all elements as a list using a loop and an array 
 					}
 					else{
 					var valueFilter = filters[fIndexA].getAppliedValues()[fIndexB+x].value;
@@ -45,7 +45,7 @@
 		// Initialise the viz to hold the workbook
 		function initializeViz(){
 			var placeholderDiv = document.getElementById("tableauViz");   	
-			url = "http://barrow.tsi.lan/#/views/Book3/Main?:embed=y&:display_count=no";
+			url = "http://barrow.tsi.lan/#/views/Book3/Main?:refresh=yes";
 			var options = {
 	        width: "1004px", //width: placeholderDiv.offsetWidth,
 	        height: "862px", //height: placeholderDiv.offsetHeight,
@@ -70,6 +70,5 @@
 	    //Initialize the viz after the div is created
 	    initializeViz();
 	    </script>
-	    <button id="pushme" onclick="getFilters()">pushme</button>
 	</body>
 	</html>
